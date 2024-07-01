@@ -1,0 +1,139 @@
+{% extends 'form.html' %}
+{% load static %}
+{% block head_form %}
+    <script src="{% static 'lib/select2-4.0.13/js/select2.min.js' %}"></script>
+    <script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css' %}">
+    <script src="{% static 'quiz/admin/js/form.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <form class="form" method="post" action="." enctype="multipart/form-data" id="frmForm" data-url="{{ list_url }}" autocomplete="off">
+        <div class="card {{ dashboard.card }}">
+            <div class="card-header">
+                <h3 class="card-title">
+                    {% if action == 'add' %}
+                        <i class="fas fa-plus"></i>
+                    {% else %}
+                        <i class="fas fa-edit"></i>
+                    {% endif %}
+                    {{ title }}
+                </h3>
+            </div>
+            <div class="card-body" style="display: block;">
+                <div class="container-fluid">
+                    <input type="hidden" name="action" id="action" value="{{ action }}">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-lg-9">
+                            <div class="form-group">
+                                <label>{{ form.name.label }}:</label>
+                                {{ form.name }}
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="form-group">
+                                <label>{{ form.type.label }}:</label><br>
+                                {{ form.type }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label>{{ form.instructions.label }}:</label>
+                                {{ form.instructions }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card p-4">
+                        <h3 class="text-center font-weight-bold">
+                            <i class="fa-solid fa-clipboard-question"></i><br>
+                            Banco de preguntas
+                        </h3>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label>Búsqueda de preguntas:</label>
+                                    <div class="input-group input-group-search">
+                                        <input type="text" class="form-control" autocomplete="off" name="input_search_question" placeholder="Ingrese el nombre de una pregunta">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fas fa-tasks"></i>
+                                            </button>
+                                            <div class="dropdown-menu dropdown-menu-right" style="cursor: pointer;">
+                                                <a class="dropdown-item btnSearchQuestions"><i class="fas fa-search"></i> Buscar preguntas</a>
+                                                <a class="dropdown-item btnClearQuestions"><i class="fas fa-times"></i> Limpiar búsqueda</a>
+                                                <a class="dropdown-item btnRemoveAllQuestions"><i class="fas fa-trash-alt"></i> Borrar todo</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <table style="width:100%;" class="table table-bordered table-sm" id="tblQuestions">
+                                    <thead>
+                                    <tr>
+                                        <th style="width: 5%;">Eliminar</th>
+                                        <th style="width: 30%;">Categoría</th>
+                                        <th style="width: 65%;">Pregunta</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary btn-flat">
+                    <i class="fas fa-save"></i> Guardar registro
+                </button>
+                <a href="{{ list_url }}" class="btn btn-danger btn-flat">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
+            </div>
+        </div>
+    </form>
+    <div id="myModalSearchQuestions" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <b><i class="fa fa-search"></i> Búsqueda de preguntas</b>
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <table style="width:100%;" class="table table-bordered table-sm" id="tblSearchQuestions">
+                            <thead>
+                            <tr>
+                                <th style="width: 5%;">Código</th>
+                                <th style="width: 30%;">Categoría</th>
+                                <th style="width: 55%;">Pregunta</th>
+                                <th style="width: 10%;">Agregar</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="application/javascript">
+        $(function () {
+            quiz.questions = {{ questions|safe }};
+            quiz.listQuestions();
+        });
+    </script>
+{% endblock %}
